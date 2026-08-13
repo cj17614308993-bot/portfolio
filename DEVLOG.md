@@ -123,6 +123,124 @@
 
 ---
 
+## 2026-08-14 · 第三轮：动态视觉升级 + 多图画库 + 视频模块
+
+### 概述
+
+本轮围绕"动态视觉效果"和"内容丰富度"两个方向展开，集成了多个 React Bits 开源组件，将作品集从静态展示升级为具备 WebGL 动效、手风琴交互、多图画库和视频演示的完整作品。
+
+### 一、Hero 背景升级：WebThreads WebGL 光丝
+
+**需求**：用户希望 Hero 区域更有科技感和动态效果。
+
+**方案**：集成 React Bits 的 `WebThreads` 组件（基于 ogl 的 WebGL 动态发光线条编织效果），替换原有的视频背景。
+
+**改动**：
+- 新增依赖：`ogl`
+- 新增组件：`src/components/WebThreads.jsx`
+- `Hero.jsx`：移除 `<video>`，替换为 `<WebThreads>`
+- 配置参数：8 条光丝，蓝青配色（`#5b9dff` / `#38bdf8` / `#ffffff`），speed 0.15，支持鼠标交互
+- 组件内置：IntersectionObserver（不可见时暂停渲染）、页面可见性处理、resize 自适应
+- z-index 层级：WebThreads(0) → overlay/grid(1) → content(2)，鼠标事件穿透
+
+### 二、作品集多图画库（31 张）
+
+**需求**：用户反馈"作品集显示的图片不够"，提供了 PPT 和资料目录，要求以 PPT 图片为主扩充。
+
+**方案**：每个项目配置多张展示图，卡片只显示封面，点击进入 Lightbox 左右翻页浏览。
+
+**改动**：
+- `Lightbox.jsx` 重写：支持 `images` 数组、左右箭头翻页、键盘 `←→` 切换、底部序号 `当前/总数`、`ESC` 关闭
+- `Projects.jsx`：封面取 `images[0]`，点击传入完整数组
+- `content.js`：8 个项目的 `image` 字段改为 `images` 数组，共 31 张图
+- 图片全部转换为 webp，最长边 ≤2400px，quality 82
+
+**图片配置明细**：
+
+| 项目 | 编号 | 图片数 | 内容 |
+|------|------|--------|------|
+| Octane 影视级渲染 | p01 | 3 | 正面/前45°/后45° |
+| 汽车实时渲染 UE4/HDRP | p02 | 4 | Unity HDRP + UE4 红蓝轿车 |
+| 次世代生物建模 | p03 | 3 | 瓢虫/叩头虫/犀金龟 |
+| DiLink 3D ADAS | p04 | 5 | 模型库/界面/实拍/3D ADAS |
+| 360° 全景倒车 | p05 | 6 | 全景效果/泊车界面/考试题 |
+| Unity 多场景可视化 | p06 | 3 | 办公/居住/农业园区 |
+| 高德导航 NOA | p07 | 3 | 主图/隧道场景/PPT内嵌 |
+| 汽车硬表面建模 | p08 | 4 | 内饰与引擎（PPT 第17页） |
+
+- p02 标题调整为"汽车实时渲染 · UE4 / Unity HDRP"，涵盖两种引擎
+- 旧的单张主图 `p01.webp ~ p08.webp` 已删除
+
+### 三、AccordionGallery 手风琴图库
+
+**需求**：用户要求集成手风琴图库组件，并且可以放大看全图。
+
+**方案**：集成 React Bits 的 `AccordionGallery`，点击已展开面板时打开 Lightbox 查看该项目完整图集。
+
+**改动**：
+- 新增依赖：`gsap`（手风琴 + 深度轮播共用）
+- 新增组件：`src/components/AccordionGallery.jsx`（基于官方源码，新增 `onSelect` 回调）
+- 新增组件：`src/components/Gallery.jsx`（包裹手风琴 + Lightbox 放大）
+- 配置：8 个项目封面图，hover 切换，expandRatio 0.42，tilt 6°，蓝青强调色
+- 交互：悬停/点击切换展开面板，再次点击已展开面板 → 打开 Lightbox 多图画库
+- 放置位置：Hero 之后、About 之前
+
+### 四、DepthCarousel 深度轮播（已集成后移除）
+
+**过程**：曾集成 React Bits 的 `DepthCarousel` 3D 深度轮播组件，创建 `Featured.jsx` 放在 Hero 之后。后用户决定保留手风琴图库、移除深度轮播，从 `App.jsx` 中移除引用。
+
+**现状**：`DepthCarousel.jsx` 和 `Featured.jsx` 组件文件保留在 `src/components/`，未被引用，不影响构建体积（tree-shaking），后续可随时恢复。
+
+### 五、VideoShowcase 视频展示模块
+
+**需求**：用户上传 3 个视频文件，要求增加视频模块。
+
+**方案**：创建响应式视频卡片网格，静音自动循环播放，支持 controls 交互。
+
+**改动**：
+- 新增组件：`src/components/VideoShowcase.jsx`
+- 视频文件复制到 `public/videos/`，重命名为英文：
+  - `boot-animation.mp4`（1.85 MB）— 车机开机动画
+  - `demo-01.mp4`（9.22 MB）— UI 动效与交互演示
+  - `demo-02.mp4`（19.71 MB）— 3D 可视化作品演示
+- `content.js` 新增 `videos` 数组统一管理
+- 播放配置：`muted + autoplay + loop + playsInline + controls`，`loading="lazy"` + `preload="metadata"`
+- 视觉：3 列网格，卡片 hover 上浮 + 蓝青边框光晕，16:9 视频比例
+- 放置位置：Projects 之后、Strengths 之前
+
+### 六、Git 与部署
+
+- 本轮共产生 2 个 commit：
+  - `ff87860`：作品集视觉升级 — WebThreads + 手风琴图库 + 多图画库
+  - `ca5cba3`：新增视频展示模块 VideoShowcase
+- 加上之前未推送的 `a0c5308`、`692e9d6`，共 4 个 commit 分批推送
+- 国内网络连接 GitHub 不稳定，多次出现 443 端口超时，最终全部推送成功
+- Vercel 自动部署触发
+
+### 当前页面结构
+
+```
+Navbar（固定导航）
+├── Hero（WebThreads WebGL 光丝背景）
+├── Gallery（AccordionGallery 手风琴图库 + Lightbox 放大）
+├── About（个人介绍 + 数字动画 + 履历）
+├── Projects（8 项目卡片网格 + 多图画库 Lightbox）
+├── VideoShowcase（3 视频演示网格）
+├── Strengths（6 项能力卡片）
+└── Contact（联系方式 + Footer）
+```
+
+### 构建体积变化
+
+| 阶段 | CSS | JS (gzip) |
+|------|-----|-----------|
+| 第二轮结束 | 25 KB | 164 KB (55 KB) |
+| 第三轮结束 | 33 KB | 295 KB (102 KB) |
+
+主要增量来自 `gsap`（约 80KB）和 `ogl`（WebThreads 依赖）。
+
+---
+
 ## 技术决策记录
 
 ### 为什么用原生 CSS 而非 Tailwind/CSS-in-JS？
@@ -155,18 +273,19 @@
 
 ## 待办 / 未来迭代方向
 
-- [ ] 替换 Hero 视频为更精彩的 UE4 实机录屏（需压缩）
+- [x] 替换 Hero 视频为动态背景（已用 WebThreads WebGL 光丝替代）
 - [ ] 调整 p01 图片 object-position 消除顶部白边
 - [ ] 考虑更换头像为职业照
 - [ ] 增加项目详情模态页（点击项目展开更多内容）
-- [ ] 增加视频展示区（嵌入 01.mp4 / 02.mp4）
+- [x] 增加视频展示区（嵌入 01.mp4 / 02.mp4 / 开机动画）
 - [ ] 增加技能进度条或软件熟练度可视化
 - [ ] 增加页面加载动画（Loading Screen）
 - [ ] 增加自定义光标（科技感）
 - [ ] 暗色/亮色主题切换
 - [ ] SEO 优化（meta 标签、Open Graph、结构化数据）
-- [ ] 性能优化（图片懒加载、视频预加载策略）
-- [ ] 等待用户提供参考网站和截图进行第三轮针对性优化
+- [x] 性能优化（视频懒加载已完成；图片懒加载待补充）
+- [ ] 压缩 demo-02.mp4（当前 19.71MB，建议压至 10MB 以内）
+- [ ] 等待用户提供参考网站和截图进行第四轮针对性优化
 
 ---
 
