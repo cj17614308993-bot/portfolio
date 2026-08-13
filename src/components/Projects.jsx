@@ -23,7 +23,7 @@ function ProjectCard({ p, index }) {
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && setLightbox(true)}
       >
-        <img src={p.image} alt={p.title} loading="lazy" />
+        <img src={p.images[0]} alt={p.title} loading="lazy" />
         <div className="project-card__media-overlay" />
         <span className="project-card__index">{p.index}</span>
         <span className="project-card__category">{p.category}</span>
@@ -58,7 +58,7 @@ function ProjectCard({ p, index }) {
 
       {lightbox && (
         <Lightbox
-          src={p.image}
+          images={p.images}
           alt={p.title}
           onClose={() => setLightbox(false)}
         />

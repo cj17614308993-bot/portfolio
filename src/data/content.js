@@ -42,7 +42,11 @@ export const projects = [
     title: 'Octane 影视级汽车渲染',
     titleEn: 'Octane Render · Mercedes-AMG GT',
     category: '离线渲染 / Offline Rendering',
-    image: '/images/projects/p01.webp',
+    images: [
+      '/images/projects/p01_01.webp',
+      '/images/projects/p01_02.webp',
+      '/images/projects/p01_03.webp',
+    ],
     description:
       '使用 Octane Render 完成奔驰 AMG GT 高精度离线渲染。路径追踪实现物理正确的全局光照，配合 HDRI 与区域光，精准还原金属漆颗粒感、碳纤维纹理与玻璃折射，在实时帧率之外追求影视级画面品质。',
     tags: ['Octane Render', '路径追踪 4096spp', '4K 输出', 'PBR 材质'],
@@ -52,14 +56,19 @@ export const projects = [
   {
     id: 'hdrp-realtime',
     index: '02',
-    title: 'Unity HDRP 汽车实时渲染',
-    titleEn: 'Unity HDRP · Real-time Automotive Visualization',
+    title: '汽车实时渲染 · UE4 / Unity HDRP',
+    titleEn: 'Real-time Automotive Rendering · UE4 / Unity HDRP',
     category: '实时渲染 / Real-time Rendering',
-    image: '/images/projects/p02.webp',
+    images: [
+      '/images/projects/p02_01.webp',
+      '/images/projects/p02_02.webp',
+      '/images/projects/p02_03.webp',
+      '/images/projects/p02_04.webp',
+    ],
     description:
-      '基于 Unity 高清渲染管线（HDRP）打造汽车可视化方案。以 PBR 工作流重建车漆、金属、玻璃材质，配合体积光、屏幕空间反射与后处理栈，在车机端稳定 60FPS，实现视觉效果与性能的平衡。',
-    tags: ['Unity HDRP', 'PBR 材质', 'SSR / 体积光', 'Draw Call -40%'],
-    metrics: '材质还原度 95%+ · 车机端 60FPS',
+      '基于 UE4 与 Unity 高清渲染管线（HDRP）打造汽车可视化方案，解决传统离线渲染无法实时交互、修改成本高、出图周期长的痛点。以 PBR 工作流重建车漆、金属、玻璃材质，配合光线追踪、体积光与后处理栈，实现车漆颜色切换、轮毂更换、环境切换等实时交互，在车机端稳定 60FPS。',
+    tags: ['UE4 / Unity HDRP', 'PBR 材质', '实时光追 / 体积光', '60FPS 交互'],
+    metrics: '材质还原度 95%+ · 渲染延迟 < 16ms · 出图效率提升 10 倍',
     size: 'medium',
   },
   {
@@ -68,7 +77,11 @@ export const projects = [
     title: '次世代生物建模全流程',
     titleEn: 'Next-gen Creature Modeling Pipeline',
     category: '硬表面 / 生物建模',
-    image: '/images/projects/p03.webp',
+    images: [
+      '/images/projects/p03_01.webp',
+      '/images/projects/p03_02.webp',
+      '/images/projects/p03_03.webp',
+    ],
     description:
       '从 ZBrush 高模雕刻出发，经拓扑重建、UV 展开、法线 / AO 烘焙，到 Substance Painter 绘制 PBR 材质，最终在 Marmoset Toolbag 实时渲染。独角仙、瓢虫、叩头虫三个案例覆盖甲壳、半透明翅膀与绒毛等材质挑战。',
     tags: ['ZBrush', 'Maya / SP', '4K PBR 贴图', '500 万面高模'],
@@ -81,9 +94,15 @@ export const projects = [
     title: 'DiLink 3D ADAS 智能驾驶可视化',
     titleEn: 'DiLink 3D ADAS · From 5.0 to 6.0',
     category: '智能驾驶 / HMI 3D',
-    image: '/images/projects/p04.webp',
+    images: [
+      '/images/projects/p04_01.webp',
+      '/images/projects/p04_02.webp',
+      '/images/projects/p04_03.webp',
+      '/images/projects/p04_04.webp',
+      '/images/projects/p04_05.webp',
+    ],
     description:
-      'DiLink 从 5.0 迭代到 6.0，3D 可视化完成从“有模型”到“还原真实路况”的跨越。建立标准化车辆模型库覆盖 30+ 车型，6.0 引入实车级模型与实时环境渲染，将摄像头画面与 3D 车模融合，ACC、车道保持、自动变道、盲区监测均以 3D 场景直接呈现，登陆比亚迪发布会。',
+      'DiLink 从 5.0 迭代到 6.0，3D 可视化完成从"有模型"到"还原真实路况"的跨越。建立标准化车辆模型库覆盖 30+ 车型，6.0 引入实车级模型与实时环境渲染，将摄像头画面与 3D 车模融合，ACC、车道保持、自动变道、盲区监测均以 3D 场景直接呈现，登陆比亚迪发布会。',
     tags: ['UE / Unity', '3D 车模库', '传感器数据可视化', '虚实融合'],
     metrics: '模型面数提升 5 倍 · 融合延迟 < 50ms',
     size: 'medium',
@@ -94,7 +113,14 @@ export const projects = [
     title: '360° 全景倒车影像系统',
     titleEn: '360° Surround View · Parking Assistance',
     category: '量产项目 / Production',
-    image: '/images/projects/p05.webp',
+    images: [
+      '/images/projects/p05_01.webp',
+      '/images/projects/p05_02.webp',
+      '/images/projects/p05_03.webp',
+      '/images/projects/p05_04.webp',
+      '/images/projects/p05_05.webp',
+      '/images/projects/p05_06.webp',
+    ],
     description:
       '主导高精度车模视觉优化，从 CAD 模型重构、PBR 材质与物理级光影调校，到协同算法端优化畸变校正与虚实融合逻辑，在车规级低功耗芯片下实现虚拟车模与真实环境的毫米级贴合，彻底消除 2D 影像的视角盲区与距离误判。',
     tags: ['四目 1080P 拼接', 'PBR 车模', '畸变校正', '动态轨迹线'],
@@ -107,7 +133,11 @@ export const projects = [
     title: 'Unity 多场景 3D 可视化',
     titleEn: 'Unity Multi-scene 3D Visualization',
     category: '场景搭建 / Environment',
-    image: '/images/projects/p06.webp',
+    images: [
+      '/images/projects/p06_01.webp',
+      '/images/projects/p06_02.webp',
+      '/images/projects/p06_03.webp',
+    ],
     description:
       '基于 Unity 打造覆盖现代办公、多元居住、生态农业的多场景 3D 可视化项目。PBR 材质与实时光照还原真实空间质感，支持第一人称漫游、物体交互与材质切换，让客户在虚拟空间中自由体验，缩短方案确认周期。',
     tags: ['Unity', '光影烘焙', '第一人称漫游', 'PC / VR 双平台'],
@@ -120,7 +150,11 @@ export const projects = [
     title: '高德导航 NOA 智能驾驶',
     titleEn: 'Amap NOA · Navigation & Smart Driving',
     category: '智能驾驶 / HMI 3D',
-    image: '/images/projects/p07.webp',
+    images: [
+      '/images/projects/p07_01.webp',
+      '/images/projects/p07_02.webp',
+      '/images/projects/p07_03.webp',
+    ],
     description:
       '依托高精地图与多传感器融合，实现高速到城区全场景智能驾驶覆盖。3D 导航画面与实车视角实时联动，车道级引导精准到具体车道，变道、转弯、汇出时机一目了然，毫秒级环境感知与 AI 决策规划呈现于车机屏幕。',
     tags: ['高精地图', '车道级渲染', '高速 / 城市 NOA', 'AI 决策'],
@@ -133,7 +167,12 @@ export const projects = [
     title: '汽车硬表面建模 · 内饰与引擎',
     titleEn: 'Automotive Hard-surface · Interior & Engine',
     category: '硬表面建模 / Hard-surface',
-    image: '/images/projects/p08.webp',
+    images: [
+      '/images/projects/p08_01.webp',
+      '/images/projects/p08_02.webp',
+      '/images/projects/p08_03.webp',
+      '/images/projects/p08_04.webp',
+    ],
     description:
       '完整跑车硬表面建模项目，覆盖发动机舱动力总成与整车内饰座舱两大模块。引擎舱在保障机械结构完整度前提下精细化控制面数，全部依靠模型布线实现结构细节与光影，不依赖法线贴图，对结构观察与硬表面功底要求极高。',
     tags: ['Blender / Maya', '引擎舱布线', '内饰装配', '低面数优化'],

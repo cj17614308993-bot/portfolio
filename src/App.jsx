@@ -1,5 +1,6 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import Gallery from './components/Gallery'
 import About from './components/About'
 import Projects from './components/Projects'
 import Strengths from './components/Strengths'
@@ -15,6 +16,7 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
+        <Gallery />
         <About />
         <Projects />
         <Strengths />

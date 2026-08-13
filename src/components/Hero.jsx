@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { profile } from '../data/content'
+import WebThreads from './WebThreads'
 
 export default function Hero() {
   const glowRef = useRef(null)
@@ -14,17 +15,30 @@ export default function Hero() {
 
   return (
     <section id="top" className="hero" onMouseMove={handleMouseMove}>
-      <video
-        className="hero__video"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        poster="/images/projects/p01.webp"
-      >
-        <source src="/videos/hero.mp4" type="video/mp4" />
-      </video>
+      <WebThreads
+        className="hero__webgl"
+        color1="#5b9dff"
+        color2="#38bdf8"
+        color3="#ffffff"
+        speed={0.15}
+        threadCount={8}
+        frequency={4.0}
+        spread={0.28}
+        taper={1.3}
+        position={0.55}
+        fanMode="center"
+        glow={0.025}
+        falloff={0.55}
+        thickness={1.0}
+        brightness={0.55}
+        opacity={0.9}
+        mirror={true}
+        shimmer={true}
+        grain={true}
+        grainIntensity={0.04}
+        mouseInteraction={true}
+        mouseStrength={0.25}
+      />
 
       <div className="hero__overlay" />
       <div className="hero__grid" />
