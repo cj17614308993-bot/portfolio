@@ -232,3 +232,31 @@ export const navLinks = [
   { label: '能力', en: 'Skills', href: '#skills' },
   { label: '联系', en: 'Contact', href: '#contact' },
 ]
+
+// 视频展示模块
+export const videos = [
+  {
+    id: 'boot-animation',
+    title: '车机开机动画',
+    titleEn: 'Boot Animation',
+    description: 'DiLink 车机系统启动动画，品牌视觉与动效节奏的完整呈现。',
+    src: '/videos/boot-animation.mp4',
+    size: 'small',
+  },
+  {
+    id: 'demo-01',
+    title: 'UI 动效与交互演示',
+    titleEn: 'UI Motion & Interaction',
+    description: '车机界面动效设计与交互流程演示，涵盖转场、反馈与状态切换。',
+    src: '/videos/demo-01.mp4',
+    size: 'medium',
+  },
+  {
+    id: 'demo-02',
+    title: '3D 可视化作品演示',
+    titleEn: '3D Visualization Reel',
+    description: '实时渲染与 3D 交互作品合集，展示动态画面与操作体验。',
+    src: '/videos/demo-02.mp4',
+    size: 'large',
+  },
+]
