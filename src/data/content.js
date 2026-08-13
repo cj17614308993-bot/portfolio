@@ -93,7 +93,7 @@ export const projects = [
     index: '05',
     title: '360° 全景倒车影像系统',
     titleEn: '360° Surround View · Parking Assistance',
-    category: '量产量产项目 / Production',
+    category: '量产项目 / Production',
     image: '/images/projects/p05.webp',
     description:
       '主导高精度车模视觉优化，从 CAD 模型重构、PBR 材质与物理级光影调校，到协同算法端优化畸变校正与虚实融合逻辑，在车规级低功耗芯片下实现虚拟车模与真实环境的毫米级贴合，彻底消除 2D 影像的视角盲区与距离误判。',

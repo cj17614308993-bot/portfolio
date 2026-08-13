@@ -1,6 +1,7 @@
 import { profile } from '../data/content'
 import Icon from './Icon'
 import useReveal from '../hooks/useReveal'
+import useCountUp from '../hooks/useCountUp'
 
 function SectionLabel({ index, cn, en }) {
   return (
@@ -10,6 +11,22 @@ function SectionLabel({ index, cn, en }) {
         <strong>{cn}</strong>
         <em>{en}</em>
       </span>
+    </div>
+  )
+}
+
+function StatItem({ s }) {
+  // 解析数字和后缀（如 "8+" -> 8, "+"; "60" -> 60, ""）
+  const match = s.value.match(/^(\d+)(.*)$/)
+  const num = match ? match[1] : '0'
+  const suffix = match ? match[2] : ''
+  const display = useCountUp(num, 1800, suffix)
+
+  return (
+    <div className="stat">
+      <div className="stat__value">{display}</div>
+      <div className="stat__label">{s.label}</div>
+      <div className="stat__en">{s.en}</div>
     </div>
   )
 }
@@ -66,11 +83,7 @@ export default function About() {
 
             <div className="about__stats">
               {profile.stats.map((s) => (
-                <div key={s.label} className="stat">
-                  <div className="stat__value">{s.value}</div>
-                  <div className="stat__label">{s.label}</div>
-                  <div className="stat__en">{s.en}</div>
-                </div>
+                <StatItem key={s.label} s={s} />
               ))}
             </div>
 

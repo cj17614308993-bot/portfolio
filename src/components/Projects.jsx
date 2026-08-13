@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import { projects } from '../data/content'
 import Icon from './Icon'
 import useReveal from '../hooks/useReveal'
+import Lightbox from './Lightbox'
 
 function ProjectCard({ p, index }) {
   const { ref, shown } = useReveal()
   const reverse = index % 2 === 1
+  const [lightbox, setLightbox] = useState(false)
 
   return (
     <article
@@ -13,11 +16,23 @@ function ProjectCard({ p, index }) {
         shown ? 'is-shown' : ''
       }`}
     >
-      <div className="project-card__media">
+      <div
+        className="project-card__media"
+        onClick={() => setLightbox(true)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && setLightbox(true)}
+      >
         <img src={p.image} alt={p.title} loading="lazy" />
         <div className="project-card__media-overlay" />
         <span className="project-card__index">{p.index}</span>
         <span className="project-card__category">{p.category}</span>
+        <span className="project-card__zoom">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          </svg>
+          点击查看
+        </span>
       </div>
 
       <div className="project-card__body">
@@ -40,6 +55,14 @@ function ProjectCard({ p, index }) {
           {p.metrics}
         </div>
       </div>
+
+      {lightbox && (
+        <Lightbox
+          src={p.image}
+          alt={p.title}
+          onClose={() => setLightbox(false)}
+        />
+      )}
     </article>
   )
 }
