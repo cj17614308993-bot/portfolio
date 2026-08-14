@@ -241,6 +241,213 @@ Navbar（固定导航）
 
 ---
 
+## 2026-08-14 · 资源优化：p01 图片白边裁剪 + demo-02 视频压缩
+
+### p01_01.webp 白边处理
+
+- **问题**：Octane 渲染图顶部有约 20% 纯白色区域，与暗色主题冲突
+- **原计划**：用 CSS `object-position` 偏移，但发现图片 16:9 比项目卡片容器 16:10 更宽，`object-fit: cover` 模式下左右裁剪、上下填满，垂直方向偏移无效
+- **最终方案**：直接用 Pillow 裁剪顶部 236px（216px 纯白边 + 20px 渐变过渡区），1920×1080 → 1920×844，webp quality 82，顶部亮度从 255 降至 100（稳定灰色）
+- **影响**：项目卡片封面 + 手风琴图库第一个面板 + Lightbox 图集首图均自动生效，无需改代码
+
+### demo-02.mp4 视频压缩
+
+- **工具**：imageio-ffmpeg（内置 ffmpeg 二进制，无需系统安装）
+- **参数**：H.264 CRF 28 + preset medium + AAC 96k + faststart
+- **结果**：19.71 MB → 9.80 MB，压缩率 50.3%，视频码率 362 kb/s
+- **画质**：960×544 @ 25fps，CRF 28 在该分辨率下肉眼可接受，适合网页展示
+- **原文件**：已替换，文件名不变，content.js 引用无需修改
+
+### 变更文件
+
+- `public/images/projects/p01_01.webp`（裁剪覆盖）
+- `public/videos/demo-02.mp4`（压缩替换）
+- `DEVLOG.md`（本日志 + 待办更新）
+
+---
+
+## 2026-08-14 · UE4 / Unity 项目拆分
+
+### 背景
+
+原项目 02「汽车实时渲染 · UE4 / Unity HDRP」将两个引擎的作品混在一起，图片和描述不够聚焦。用户提供 UE4 参考图（银/红/蓝/黑四款车型海边场景），要求拆分为两个独立项目。
+
+### 拆分方案
+
+- **项目 02 — UE4 汽车实时渲染**（id: `ue4-realtime`）
+  - 4 张图：白色车、黑色车（从参考图裁剪）+ 原 p02_03（红）、p02_04（蓝）
+  - 描述参考用户提供的 UE4 作品文案：四款车型、车漆 Shader、暗部死黑优化、Sequencer 动画
+  - 标签：UE4 / 光线追踪、PBR 材质实例、车漆 Shader、Sequencer 动画
+  - size: large
+
+- **项目 03 — Unity HDRP 汽车实时渲染**（id: `unity-hdrp-realtime`）
+  - 2 张图：原 p02_01、p02_02（现代建筑露台场景）
+  - 描述聚焦 Unity HDRP 管线、PBR 材质、体积光、车规级性能
+  - size: medium
+
+- 后续项目序号顺延：原 03→04、04→05、05→06、06→07、07→08、08→09
+- 项目总数从 8 个增至 9 个，手风琴图库与 Projects 组件均为动态遍历，无需改代码
+
+### 新增图片
+
+- `public/images/projects/ue4_white.webp`（543×278，从参考图裁剪）
+- `public/images/projects/ue4_black.webp`（543×278，从参考图裁剪）
+
+### 变更文件
+
+- `src/data/content.js`（拆分项目 + 序号顺延）
+- `public/images/projects/ue4_white.webp`（新增）
+- `public/images/projects/ue4_black.webp`（新增）
+- `DEVLOG.md`（本日志）
+
+---
+
+## 2026-08-15 · 第四轮：项目图片全面替换 + 内容扩充 + 结构重组
+
+### 概述
+
+本轮以用户提供的高清原图为主线，逐项目替换低质量配图，新增两个泊车相关项目，按「自研 / 量产 / 历史」重新排列项目顺序，并将视频模块整合进作品区域，最后更换头像。项目总数从 9 增至 11。
+
+### 一、UE4 项目图片替换（4 张高清车型图）
+
+- **背景**：此前 UE4 项目的白色/黑色车图是从参考截图中裁剪的低质量图（543×278）
+- **替换**：用户提供 4 张高清原图（银/红/蓝/黑四款车型海边场景），转换为 webp 后覆盖
+  - `ue4_silver.webp`（1006×579，58 KB）
+  - `ue4_red.webp`（957×541，57 KB）
+  - `ue4_blue.webp`（1024×526，56 KB）
+  - `ue4_black.webp`（1027×541，59 KB，覆盖旧同名文件）
+- 删除旧的 `ue4_white.webp`、`p02_03.webp`、`p02_04.webp`
+- size 保持 large
+
+### 二、DiLink 3D ADAS 项目更新（6 张图 + 文案融合）
+
+- **图片**：用户分两轮提供 6 张图
+  - 模型库 3 张：完整网格 + 2 张侧视图 → `adas_grid.webp`、`adas_lineup_01.webp`、`adas_lineup_02.webp`
+  - 实车界面 3 张：2 张仪表 3D ADAS 界面 + 1 张泊车场景车内实拍 → `adas_dashboard_01.webp`、`adas_dashboard_02.webp`、`adas_parking.webp`
+- **文案**：将用户提供的 DiLink 4.0→6.0 迭代段落与原有描述融合，强调：
+  - 5.0 阶段建立标准化车辆模型库（50+ 车型），解决模型粗糙、场景还原度低问题
+  - 6.0 引入实车级 3D 模型与实时环境渲染，摄像头画面与 3D 车模虚实融合
+  - 全场景仿真建模库支持昼夜/雨雪/雾天切换，为 HIL 测试提供虚拟验证环境
+  - 相比传统 2D 仪表做到所见即所得
+- 标签：UE / Unity、3D 模型库 50+、全场景仿真、虚实融合
+- 指标：车辆模型 50+ · 场景类型 20+ · 测试效率提升 300%
+- 删除旧的 6 张 `p04_*.webp`
+
+### 三、360° 全景倒车项目图片替换（2 张图）
+
+- **替换**：原 6 张 `p05_*.webp` 替换为 2 张实车界面图
+  - `surround_3d_ui.webp`（1142×323，58 KB）— 车机 3D 全景倒车界面
+  - `surround_real_effect.webp`（1152×369，46 KB）— 车内实拍全景倒车效果
+- size 从 wide 改为 medium（2 张图）
+- 文案/标签/指标保持不变
+
+### 四、高德导航 NOA 项目图片替换（2 张图）
+
+- **替换**：原 3 张 `p07_*.webp` 替换为 2 张实车场景图
+  - `noa_main.webp`（1490×834，104 KB）— 城市道路 NOA 变道场景（车内实拍）
+  - `noa_tunnel.webp`（675×785，49 KB）— 隧道场景 NOA 车道级导航
+- size 从 tall 改为 medium
+
+### 五、新增两个泊车项目（5 张图）
+
+在 360° 全景倒车之后、Unity 多场景之前插入两个新项目：
+
+**项目 — 泊车考试题设计**（id: `parking-quiz`）
+- 3 张图：`parking_quiz_01~03.webp`（车机功能学习及测试界面，多选题）
+- 文案：标准化考题体系，覆盖垂直/平行/斜列/窄泊位等工况，分级考题，车机端可视化，自动评分与数据记录
+- 标签：记忆泊车、考题体系、车机可视化、分级考题
+- 指标：考题覆盖 20+ 泊车场景 · 明确功能边界 · 规范操作行为
+
+**项目 — 自动泊车测试**（id: `auto-parking-test`）
+- 2 张图：`auto_parking_01~02.webp`（车机自动泊车界面，3D 车辆模型 + 俯视摄像头）
+- 文案：毫米波雷达 + 高清视觉感知 + AI 决策算法，车位检测、路径规划、车辆动力学控制，垂直/侧方/斜向车位自主泊入
+- 标签：毫米波雷达、视觉感知、AI 决策、路径规划
+- 指标：车位识别 99.2% · 平均入位 38 秒 · 最小间距 2.4 米
+
+### 六、项目顺序重新排列（自研 / 量产 / 历史）
+
+按用户要求将 11 个项目分为三组重新排序：
+
+| 序号 | 项目 | 分组 |
+|------|------|------|
+| 01 | Octane 影视级汽车渲染 | 自研 |
+| 02 | UE4 汽车实时渲染 | 自研 |
+| 03 | Unity HDRP 汽车实时渲染 | 自研 |
+| 04 | 自动泊车测试 | 量产 |
+| 05 | DiLink 3D ADAS 智能驾驶可视化 | 量产 |
+| 06 | 高德导航 NOA 智能驾驶 | 量产 |
+| 07 | 泊车考试题设计 | 量产 |
+| 08 | 360° 全景倒车影像系统 | 量产 |
+| 09 | Unity 多场景 3D 可视化 | 历史 |
+| 10 | 次世代生物建模全流程 | 历史 |
+| 11 | 汽车硬表面建模 · 内饰与引擎 | 历史 |
+
+- 所有项目的 `index` 字段同步更新
+- 手风琴图库与 Projects 组件动态遍历，无需改代码
+
+### 七、视频模块整合进作品区域
+
+- **原结构**：VideoShowcase 是独立 section（`#videos`），位于 Projects 之后、Strengths 之前
+- **新结构**：将视频网格整合进 Projects 组件内部，放在 11 个项目卡片之后，作为作品区域的一部分
+- `App.jsx` 移除独立的 `<VideoShowcase />` 引用
+- `Projects.jsx` 引入 `videos` 数据并渲染视频网格 + 子标题
+- CSS 调整：`.videos` 去掉独立 section 的上下 padding，仅保留顶部间距；新增 `.section-head--sub` 子标题样式（margin-bottom 减小至 48px）
+- 响应式断点同步调整
+- `VideoShowcase.jsx` 组件文件保留（未被引用，tree-shaking 不影响构建）
+
+### 八、头像替换
+
+- 原头像：从简历 PDF 提取的戴眼镜自拍照（黑外套白衬衫）
+- 新头像：`生成简历人像图.png`（2048×2048，正装证件照，蓝灰背景）
+- 转换为 `public/images/avatar.webp`（quality 82，171 KB），直接覆盖
+- About 组件引用路径不变，无需改代码
+
+### 变更文件汇总
+
+**修改**：
+- `src/data/content.js`（项目拆分/新增/重排 + 文案融合 + index 更新）
+- `src/components/Projects.jsx`（整合视频模块）
+- `src/App.jsx`（移除独立 VideoShowcase）
+- `src/index.css`（视频模块样式调整 + section-head--sub）
+- `public/images/avatar.webp`（头像替换）
+- `public/images/projects/p01_01.webp`（此前裁剪白边）
+- `public/videos/demo-02.mp4`（此前压缩）
+- `DEVLOG.md`（本日志）
+- `.gitignore`（新增临时文件排除）
+
+**新增**（20 张 webp）：
+- UE4：`ue4_silver.webp`、`ue4_red.webp`、`ue4_blue.webp`、`ue4_black.webp`
+- ADAS：`adas_grid.webp`、`adas_lineup_01~02.webp`、`adas_dashboard_01~02.webp`、`adas_parking.webp`
+- 全景倒车：`surround_3d_ui.webp`、`surround_real_effect.webp`
+- NOA：`noa_main.webp`、`noa_tunnel.webp`
+- 泊车考试题：`parking_quiz_01~03.webp`
+- 自动泊车：`auto_parking_01~02.webp`
+
+**删除**（旧图片）：
+- `ue4_white.webp`、`p02_03.webp`、`p02_04.webp`
+- `p04_01~06.webp`（旧 ADAS 图）
+- `p05_01~06.webp`（旧全景倒车图）
+- `p07_01~03.webp`（旧 NOA 图）
+
+### 当前页面结构
+
+```
+Navbar（固定导航）
+├── Hero（WebThreads WebGL 光丝背景）
+├── Gallery（AccordionGallery 手风琴图库 + Lightbox 放大）
+├── About（个人介绍 + 数字动画 + 履历）
+├── Projects（11 项目卡片 + 动态演示 Motion Showcase 3 视频）
+├── Strengths（6 项能力卡片）
+└── Contact（联系方式 + Footer）
+```
+
+### 构建验证
+
+- `npm run build` 通过，构建时间约 1.2s
+- CSS 33.4 KB（gzip 7.2 KB），JS 296 KB（gzip 103 KB）
+
+---
+
 ## 技术决策记录
 
 ### 为什么用原生 CSS 而非 Tailwind/CSS-in-JS？
@@ -274,8 +481,8 @@ Navbar（固定导航）
 ## 待办 / 未来迭代方向
 
 - [x] 替换 Hero 视频为动态背景（已用 WebThreads WebGL 光丝替代）
-- [ ] 调整 p01 图片 object-position 消除顶部白边
-- [ ] 考虑更换头像为职业照
+- [x] 调整 p01 图片消除顶部白边（实际方案：直接裁剪图片顶部 216px 白边，因图片 16:9 比容器 16:10 宽，object-position 垂直方向无效）
+- [x] 考虑更换头像为职业照（已替换为 2048×2048 正装证件照）
 - [ ] 增加项目详情模态页（点击项目展开更多内容）
 - [x] 增加视频展示区（嵌入 01.mp4 / 02.mp4 / 开机动画）
 - [ ] 增加技能进度条或软件熟练度可视化
@@ -284,7 +491,7 @@ Navbar（固定导航）
 - [ ] 暗色/亮色主题切换
 - [ ] SEO 优化（meta 标签、Open Graph、结构化数据）
 - [x] 性能优化（视频懒加载已完成；图片懒加载待补充）
-- [ ] 压缩 demo-02.mp4（当前 19.71MB，建议压至 10MB 以内）
+- [x] 压缩 demo-02.mp4（19.71MB → 9.80MB，H.264 CRF 28 + AAC 96k，压缩率 50.3%）
 - [ ] 等待用户提供参考网站和截图进行第四轮针对性优化
 
 ---

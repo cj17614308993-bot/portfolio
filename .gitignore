@@ -32,3 +32,8 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+
+# temp / reference files
+hero_reference.png
+index_full.css
+*.tmp

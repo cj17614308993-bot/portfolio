@@ -2067,8 +2067,11 @@ a.contact-card:hover .contact-card__icon {
 
 /* ==================== VideoShowcase 视频展示区 ==================== */
 .videos {
-  padding: 120px 0;
+  padding: 120px 0 0;
   position: relative;
+}
+.section-head--sub {
+  margin-bottom: 48px;
 }
 .videos__grid {
   margin-top: 56px;
@@ -2132,7 +2135,7 @@ a.contact-card:hover .contact-card__icon {
 }
 @media (max-width: 1200px) {
   .videos {
-    padding: 96px 0;
+    padding: 96px 0 0;
   }
   .videos__grid {
     gap: 20px;
@@ -2140,7 +2143,7 @@ a.contact-card:hover .contact-card__icon {
 }
 @media (max-width: 960px) {
   .videos {
-    padding: 72px 0;
+    padding: 72px 0 0;
   }
   .videos__grid {
     grid-template-columns: 1fr;
