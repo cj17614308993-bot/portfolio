@@ -4,9 +4,10 @@ export const profile = {
   nameEn: 'CAI JIE',
   title: '3D 设计师 / AI 设计师',
   titleEn: '3D & AI Designer',
-  tagline: '以 3D 可视化与实时渲染，重塑智能出行的每一个像素。',
-  taglineEn:
-    'Bridging industrial design and real-time rendering to shape the future of smart mobility.',
+  heroTitle: ['DESIGN', 'PORTFOLIO'],
+  heroKeywords: '建模 · 材质 · 渲染 · 动画',
+  tagline: '建模 · 材质 · 渲染 · 动画',
+  taglineEn: '',
   phone: '17614308993',
   email: 'cj17614308993@163.com',
   location: '中国 · 深圳',

@@ -506,3 +506,35 @@ Navbar（固定导航）
 - **开发端口**：5173
 - **Git 远程**：`https://github.com/cj17614308993-bot/portfolio.git`
 - **部署平台**：Vercel
+
+---
+
+## 2026-08-15 · Hero 区域文案调整
+
+### 需求
+
+用户提供参考图（作品集封面风格），要求将 Hero 区域文字改为参考图的风格。
+
+### 改动
+
+**主标题**：
+- 原：`3D 可视化` / `定义智能出行`（两行，第二行蓝青渐变）
+- 新：`DESIGN` / `PORTFOLIO`（两行，第二行蓝青渐变）
+
+**副标题**：
+- 原：`以 3D 可视化与实时渲染，重塑智能出行的每一个像素。` + 英文副标题
+- 新：`建模 · 材质 · 渲染 · 动画`（单行中文关键词）
+- 移除英文副标题
+
+**数据层**：
+- `content.js`：`profile` 新增 `heroTitle: ['DESIGN', 'PORTFOLIO']` 和 `heroKeywords: '建模 · 材质 · 渲染 · 动画'`
+- `tagline` / `taglineEn` 保留但不再被 Hero 引用
+
+**组件层**：
+- `Hero.jsx`：主标题改为遍历 `profile.heroTitle` 渲染，副标题引用 `profile.heroKeywords`，移除英文副标题 `<p>` 节点
+
+### 变更文件
+
+- `src/data/content.js`（新增 heroTitle / heroKeywords 字段）
+- `src/components/Hero.jsx`（标题数据驱动 + 移除英文副标题）
+- `DEVLOG.md`（本日志）

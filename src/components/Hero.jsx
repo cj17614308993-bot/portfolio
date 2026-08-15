@@ -51,14 +51,17 @@ export default function Hero() {
         </div>
 
         <h1 className="hero__title">
-          <span className="hero__title-line">3D 可视化</span>
-          <span className="hero__title-line hero__title-line--accent">
-            定义智能出行
-          </span>
+          {profile.heroTitle.map((line, i) => (
+            <span
+              key={i}
+              className={`hero__title-line${i === 1 ? ' hero__title-line--accent' : ''}`}
+            >
+              {line}
+            </span>
+          ))}
         </h1>
 
-        <p className="hero__sub">{profile.tagline}</p>
-        <p className="hero__sub-en">{profile.taglineEn}</p>
+        <p className="hero__sub">{profile.heroKeywords}</p>
 
         <div className="hero__actions">
           <a href="#works" className="btn btn--primary btn--shine">
