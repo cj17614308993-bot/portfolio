@@ -88,7 +88,7 @@ export default function About() {
             </div>
 
             <div className="about__timeline">
-              <h4 className="about__timeline-title">工作履历 · Experience</h4>
+              <h4 className="about__timeline-title">项目经历 · Project Experience</h4>
               {profile.experience.map((e, i) => (
                 <div key={i} className="timeline-item">
                   <span className="timeline-item__period">{e.period}</span>
@@ -96,6 +96,13 @@ export default function About() {
                   <div className="timeline-item__body">
                     <strong>{e.role}</strong>
                     <em>{e.company}</em>
+                    {e.description && (
+                      <ul className="timeline-item__desc">
+                        {e.description.map((d, j) => (
+                          <li key={j}>{d}</li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
               ))}

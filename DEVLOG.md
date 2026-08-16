@@ -538,3 +538,237 @@ Navbar（固定导航）
 - `src/data/content.js`（新增 heroTitle / heroKeywords 字段）
 - `src/components/Hero.jsx`（标题数据驱动 + 移除英文副标题）
 - `DEVLOG.md`（本日志）
+
+---
+
+## 2026-08-16 · 第五轮：页面结构重组 + DriftWall 集成 + 项目经历重构
+
+### 概述
+
+本轮围绕页面结构合理性、作品区视觉升级和内容质量三个方向展开。将 Gallery 从 Hero/About 之间移至 About/Projects 之间形成连贯作品区，用 React Bits 的 DriftWall 3D 漂移墙替换原手风琴图库，将 About 区的「工作经历」重构为「项目经历」，并完成全面体检与冗余清理。
+
+### 一、页面结构与导航重组
+
+**问题**：原页面顺序为 Hero → Gallery → About → Projects，导航「作品」指向 `#works`（Projects），用户点击会跳过 Gallery 直接到精选项目，Gallery 夹在 Hero 和 About 之间缺乏导航入口。
+
+**方案**：
+- `App.jsx` 组件顺序调整为：Hero → About → Gallery → Projects → Strengths → Contact
+- `content.js` 中 `navLinks` 的「作品」href 从 `#works` 改为 `#gallery`
+- Gallery 与 Projects 连续排列，形成完整的作品展示大区
+- 点击导航「作品」先到 DriftWall 作品长廊，向下滚动自然进入精选项目卡片
+
+### 二、About 区：工作经历 → 项目经历重构
+
+**需求**：用户提供项目经历参考图，要求将「工作经历」改为「项目经历」，按从新到旧排序并润色。
+
+**改动**：
+- `content.js`：`experience` 数组从 5 条工作履历替换为 6 条项目经历
+  - 泊车影像项目（2025.06—至今）
+  - 软件可售智能驾驶答题项目
+  - DiLink 3.0–6.0 3D ADAS 项目
+  - 3D 全景倒车项目
+  - 上海车展 · 比亚迪唐车模
+  - 《使命召唤》游戏场景
+- 每条新增 `description` 字段（项目职责与成果列表）
+- `About.jsx`：标题改为「项目经历 · Project Experience」，时间线增加 description 列表渲染
+- `index.css`：新增 `.timeline-item__desc` 及 `li::before` 样式
+
+**后续调整**：用户反馈精选项目区少了「泊车影像项目」和「上海车展项目」，曾在 `projects` 数组新增 2 项（index 05、10），后用户要求撤回，恢复为 11 项（01–11）。
+
+### 三、视频模块标题修复与重设计
+
+**问题**：Projects 区视频模块标题使用了 `.section-head__tag` / `.section-head__title` / `.section-head__desc` 三个 CSS 中**完全未定义**的类名，导致文字在暗色背景上不可见。
+
+**方案**：
+- `Projects.jsx`：标题结构改为左右布局的 `.videos__header`（左侧 eyebrow + heading「视频作品展示」，右侧 lead 描述）
+- `index.css`：新增 `.videos__header` 系列样式（含 1200px/960px 响应式）
+- `.videos` padding 从 `120px 0 0` 改为 `0`，由标题自身 padding-top + 边框控制间距
+
+### 四、Gallery 标题不可见 Bug 修复
+
+**问题**：Gallery 标题同样使用了上述三个未定义的 CSS 类名，文字不可见。
+
+**方案**：`Gallery.jsx` 标题结构改为与其他区块统一的 `.section-label` 风格（编号 + 标题 + 描述）。
+
+### 五、DriftWall 3D 漂移墙集成（替换手风琴图库）
+
+**需求**：用户要求用 React Bits 的 DriftWall 组件替换原 AccordionGallery 手风琴图库。
+
+**改动**：
+- 新增组件：`src/components/DriftWall.jsx`（React Bits 官方源码，支持 `onTileClick` 回调）
+- 新增样式：`src/components/DriftWall.css`
+- `Gallery.jsx` 重写：用 DriftWall 替换 AccordionGallery + Lightbox
+- 配置参数：columns=5，tileWidth=280，tileHeight=132，gap=18，tilt=16，turn=-14，perspective=1200，depth=120，speed=42，direction=up，variance=0.45，roll=-2
+- 点击图片触发 Lightbox 放大查看该项目完整图集（`onTileClick` 回调）
+- 悬停时暂停漂移（`pauseOnHover={true}`），方便点击查看
+
+**参数迭代过程**：
+1. 初始配置（tileWidth=220, tilt=12, turn=-10, overlayColor=#07080a）
+2. 用户要求用官方示例参数 → 改为 tileWidth=280, tilt=16, turn=-14, overlayColor=#060010, roll=-2
+3. 用户反馈长廊上方空余多 → 多次调整间距
+4. 最终：去掉 Gallery 标题和描述，DriftWall 直接充满区域，高度 680px
+
+### 六、Gallery 区域间距优化
+
+**问题**：用户多次反馈长廊上方空余太大。
+
+**根因分析**：
+1. About 区块继承 `.section { padding: 160px 0 }`，底部 160px + Gallery 顶部间距过大
+2. Gallery 标题与 DriftWall 之间有 section-head margin-bottom + 容器 margin-top 双重间距
+
+**优化步骤**：
+1. 标题与 DriftWall 间距：从 136px（88+48）压缩到 40px
+2. Gallery 顶部 padding：从 120px 减到 48px
+3. About 底部 padding：从 160px 覆盖为 56px
+4. 最终方案：**移除 Gallery 标题和描述**，DriftWall 直接从区域顶端开始，Gallery 顶部 padding 归零，高度 680px
+
+### 七、全面体检与优化清单
+
+对项目进行全面检查，输出 6 项优化建议：
+1. ✅ Gallery 标题不可见（已修复）
+2. ✅ 页面结构与导航不匹配（已重组）
+3. ⬜ 区块编号顺序被打破（Gallery 去编号后已解决）
+4. ⬜ 项目经历时间线空档（2022.12–2025.06 之间视觉空档，实际 DiLink 项目覆盖）
+5. ✅ 冗余组件清理（已完成）
+6. ⬜ 空字段（待处理）
+
+### 八、冗余组件与临时文件清理
+
+**删除未引用组件**（4个）：
+- `src/components/VideoShowcase.jsx`（视频模块已整合进 Projects）
+- `src/components/AccordionGallery.jsx`（已被 DriftWall 替代）
+- `src/components/Featured.jsx`（深度轮播包裹组件，已弃用）
+- `src/components/DepthCarousel.jsx`（深度轮播，已弃用）
+
+**删除临时参考截图**（6个）：
+- `ref1.png`、`ref2.png`、`ref_a.png`、`ref_b.png`
+- `video_section.png`、`video_section2.png`
+
+### 九、Hero 按钮锚点修正
+
+- Hero「查看作品」按钮 href 从 `#works` 改为 `#gallery`，与导航一致
+
+### 当前页面结构
+
+```
+Navbar（固定导航）
+├── Hero（WebThreads WebGL 光丝背景 + DESIGN/PORTFOLIO 标题）
+├── About（个人介绍 + 数字动画 + 项目经历时间线）
+├── Gallery（DriftWall 3D 漂移墙 + Lightbox 放大，无标题）
+├── Projects（11 项目卡片 + 视频作品展示）
+├── Strengths（6 项能力卡片）
+└── Contact（联系方式 + Footer）
+```
+
+### 构建体积变化
+
+| 阶段 | CSS | JS (gzip) |
+|------|-----|-----------|
+| 第四轮结束 | 33.4 KB | 296 KB (103 KB) |
+| 第五轮结束 | 37.2 KB | 227 KB (76.9 KB) |
+
+JS 体积下降约 70KB，主要因为移除了 `gsap` 依赖（AccordionGallery/DepthCarousel 不再引用，tree-shaking 生效）。CSS 小幅增加来自 DriftWall 样式和时间线描述样式。
+
+### 变更文件汇总
+
+**修改**：
+- `src/App.jsx`（组件顺序重组）
+- `src/data/content.js`（navLinks 锚点调整 + experience 重构为项目经历）
+- `src/components/About.jsx`（项目经历标题 + description 渲染）
+- `src/components/Gallery.jsx`（DriftWall 替换手风琴 + 去标题充满布局）
+- `src/components/Projects.jsx`（视频模块标题重设计）
+- `src/components/Hero.jsx`（查看作品按钮锚点 #gallery）
+- `src/index.css`（时间线样式 + 视频标题样式 + Gallery 间距优化 + About 底部 padding）
+- `DEVLOG.md`（本日志）
+
+**新增**：
+- `src/components/DriftWall.jsx`
+- `src/components/DriftWall.css`
+
+**删除**：
+- `src/components/VideoShowcase.jsx`
+- `src/components/AccordionGallery.jsx`
+- `src/components/Featured.jsx`
+- `src/components/DepthCarousel.jsx`
+- 6 个临时参考截图（根目录）
+
+### Git 状态
+
+- 工作区有未提交修改（上述所有变更文件）
+- 尚未 commit/push，待用户确认后执行
+- 国内网络 push 可能需 VPN（AGENTS.md 已知坑）
+
+---
+
+## 2026-08-16 · 第六轮：Grainient 动态渐变背景集成尝试（最终移除）
+
+### 概述
+
+尝试集成 React Bits 的 `Grainient` WebGL 动态渐变组件作为页面背景，先后测试了 Hero 背景和内容区背景两种方案，最终用户决定移除效果，恢复原样。组件文件保留以备后续使用。
+
+### 一、Grainient 组件集成
+
+**组件来源**：React Bits（reactbits.dev），基于 ogl 的 WebGL 动态渐变背景，支持颜色混合、透视扭曲、噪点颗粒、对比度/饱和度调节等参数。
+
+**新增文件**：
+- `src/components/Grainient.jsx`（完整组件源码，含 ctxMap WeakMap、resize/visibility 处理）
+- `src/components/Grainient.css`（基础容器样式）
+
+**依赖**：`ogl`（已在第三轮 WebThreads 集成时安装，无需新增）
+
+### 二、方案一：Hero 背景
+
+- 将 Grainient 以 wrapper div 方式放入 Hero 背景层（z-index 0，pointer-events none）
+- 配色：color1 `#00e5ff`（青）、color2 `#3b82f6`（蓝）、color3 `#0c1929`（深蓝黑）
+- 同步降低 hero__overlay 遮罩强度以透出渐变
+- 用户确认效果可见
+
+### 三、方案二：内容区背景（About → Strengths）
+
+**用户反馈**：Hero 背景不合适，要求将 Grainient 移到「个人经历到个人优势」整块内容区域。
+
+**实现方案**：
+- `App.jsx`：用 `.content-bg` wrapper 包裹 About → Gallery → Projects → Strengths
+- wrapper 内添加 `.content-bg__layer` 绝对定位层（inset 0, z-index 0）放置 Grainient
+- 各 section 设置 `position: relative; z-index: 1` 确保内容在背景之上
+- `index.css`：新增 `.content-bg` / `.content-bg__layer` 样式，将 About/Projects/Strengths 背景设为 transparent 透出渐变
+- 配色调整为更低调的暗色：color1 `#1e3a5f`（深蓝）、color2 `#0c4a6e`（深青）、color3 `#07080a`（黑），saturation 0.7
+
+### 四、最终决定：移除效果
+
+用户反馈"算了还是删除这个效果吧"，执行回滚：
+
+- `App.jsx`：移除 `.content-bg` wrapper 和 Grainient 引用，恢复各 section 直接渲染
+- `index.css`：删除 `.content-bg` 全部样式，About/Projects/Strengths 背景自动恢复为原始定义
+- `Hero.jsx`：此前已移除 Grainient，hero__overlay 已恢复原始遮罩强度
+- `Grainient.jsx` / `Grainient.css`：组件文件保留在 `src/components/`，未被引用，不影响构建体积（tree-shaking），后续可随时恢复
+
+### 变更文件
+
+**修改**：
+- `src/App.jsx`（添加后移除 content-bg wrapper）
+- `src/components/Hero.jsx`（添加后移除 Grainient）
+- `src/index.css`（添加后移除 content-bg 样式 + hero__overlay 调整后恢复）
+- `DEVLOG.md`（本日志）
+
+**新增（保留）**：
+- `src/components/Grainient.jsx`
+- `src/components/Grainient.css`
+
+### 构建验证
+
+- `npm run build` 通过
+- CSS 37.2 KB（gzip 7.84 KB），JS 226.75 KB（gzip 76.69 KB）
+- 与第五轮结束时体积基本一致（Grainient 未被引用，tree-shaking 生效）
+
+### 当前页面结构（与第五轮一致）
+
+```
+Navbar（固定导航）
+├── Hero（WebThreads WebGL 光丝背景 + DESIGN/PORTFOLIO 标题）
+├── About（个人介绍 + 数字动画 + 项目经历时间线）
+├── Gallery（DriftWall 3D 漂移墙 + Lightbox 放大，无标题）
+├── Projects（11 项目卡片 + 视频作品展示）
+├── Strengths（6 项能力卡片）
+└── Contact（联系方式 + Footer）
+```

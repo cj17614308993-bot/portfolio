@@ -64,7 +64,7 @@ export default function Hero() {
         <p className="hero__sub">{profile.heroKeywords}</p>
 
         <div className="hero__actions">
-          <a href="#works" className="btn btn--primary btn--shine">
+          <a href="#gallery" className="btn btn--primary btn--shine">
             查看作品
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M13 6l6 6-6 6" />

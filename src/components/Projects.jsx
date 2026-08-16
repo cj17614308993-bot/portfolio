@@ -93,14 +93,12 @@ export default function Projects() {
         </div>
 
         <div className="videos">
-          <div className="section-head section-head--sub">
-            <span className="section-head__tag">动态演示</span>
-            <h2 className="section-head__title">
-              Motion <span className="text-accent">Showcase</span>
-            </h2>
-            <p className="section-head__desc">
-              从车机开机动画到 UI 交互、从实时渲染到 3D 可视化 —— 点击视频可取消静音、全屏观看。
-            </p>
+          <div className="videos__header">
+            <div className="videos__header-left">
+              <span className="videos__eyebrow">动态演示 · Motion Reel</span>
+              <h2 className="videos__heading">视频作品 <span className="text-accent">展示</span></h2>
+            </div>
+            <p className="videos__lead">从车机开机动画到 UI 交互、从实时渲染到 3D 可视化，点击视频可取消静音、全屏观看。</p>
           </div>
 
           <div className="videos__grid">
