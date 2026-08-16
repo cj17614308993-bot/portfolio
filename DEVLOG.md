@@ -772,3 +772,43 @@ Navbar（固定导航）
 ├── Strengths（6 项能力卡片）
 └── Contact（联系方式 + Footer）
 ```
+
+---
+
+## 2026-08-16 · 第七轮：Gallery 长廊点击放大功能修复
+
+### 问题
+
+用户反馈 DriftWall 作品长廊的图片点击后没有反应，无法查看大图。第五轮将手风琴图库替换为 DriftWall 时，遗漏了 Lightbox 放大功能的接入。
+
+### 根因
+
+- DriftWall 组件本身已内置 `onTileClick` 回调 prop（无 href 的 tile 点击时触发 `onTileClick(item, id, colIndex)`）
+- 但 Gallery.jsx 未传入该回调，也未引入 Lightbox 组件，导致点击无任何响应
+
+### 修复方案
+
+`Gallery.jsx` 重构：
+- 引入 `useState` 管理 `lightboxIndex`（当前选中的项目索引）
+- `items` 映射时为每个 item 附加 `projectIndex` 字段，便于点击后定位到对应项目
+- 给 DriftWall 传入 `onTileClick={handleTileClick}`，点击时设置 `lightboxIndex`
+- 条件渲染 `<Lightbox>`：传入对应项目的完整 `images` 数组和 `title`，支持左右翻页 / 键盘 ESC 关闭
+- Lightbox 的 `onClose` 重置 `lightboxIndex` 为 null
+
+### 交互细节
+
+- 点击长廊中任意图片 → 打开该项目的多图画库（从封面图开始）
+- Lightbox 内左右箭头 / 键盘 ←→ 切换同项目的其他图片
+- 点击背景 / 关闭按钮 / ESC 键关闭
+- 暂停漂移（`pauseOnHover={true}`）不影响点击，hover 时列暂停、点击正常触发
+
+### 变更文件
+
+- `src/components/Gallery.jsx`（接入 Lightbox + onTileClick 回调）
+- `DEVLOG.md`（本日志）
+
+### 构建验证
+
+- `npm run build` 通过
+- CSS 37.2 KB（gzip 7.84 KB），JS 226.92 KB（gzip 76.75 KB）
+- Lightbox 组件此前已存在，无新增依赖
